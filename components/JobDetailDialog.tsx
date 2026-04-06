@@ -16,7 +16,7 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { useState } from "react";
 import { Jobs } from "@/lib/models";
-import { addJob, addJobs } from "@/lib/serverActions/jobApplications";
+import { createJob } from "@/lib/serverActions/jobApplications";
 import board from "@/lib/models/board";
 
 interface JobDetailDialogProps {
@@ -42,7 +42,7 @@ const JobDetailDialog = ({ columnId, boardId }: JobDetailDialogProps) => {
     e.preventDefault();
 
     try {
-      const result = await addJob({
+      const result = await createJob({
         ...formData,
         columnId,
         boardId,
@@ -55,6 +55,7 @@ const JobDetailDialog = ({ columnId, boardId }: JobDetailDialogProps) => {
         console.error(result.error);
       } else {
         setFormData(INITIAL_DATA);
+        setOpen(false);
       }
     } catch (error) {
       console.error(error);
@@ -63,7 +64,7 @@ const JobDetailDialog = ({ columnId, boardId }: JobDetailDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button
           variant="outline"
           className="border-2 border-dashed border-gray-200 flex"

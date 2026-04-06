@@ -19,10 +19,11 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { Board, Column } from "@/lib/models/models.types";
+import { Board, Column, Jobs } from "@/lib/models/models.types";
 import { ReactNode } from "react";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import JobDetailDialog from "./JobDetailDialog";
+import JobApplicationCard from "./JobApplicationCard";
 
 interface KanbanProps {
   board: Board;
@@ -61,11 +62,15 @@ function DroppableColumn({
   config,
   column,
   boardId,
+  sortedColumns,
 }: {
   config: ColumnConfig;
   column: Column;
   boardId: string;
+  sortedColumns: Column[];
 }) {
+  const jobsSorted = column.jobs.sort((a, b) => a.order - b.order);
+
   return (
     <Card className="w-75 min-h-120 border rounded-2xl shadow-md">
       <CardHeader
@@ -88,18 +93,35 @@ function DroppableColumn({
           </DropdownMenuContent>
         </DropdownMenu>
       </CardHeader>
-      <CardContent className="text-gray-500 ml-8 mt-10">
+      <CardContent className="text-gray-500 mt-10 space-y-4">
+        {jobsSorted.map((job, key) => (
+          <SortableJobCard
+            job={{ ...job, columnId: job.columnId || column._id }}
+            key={key}
+            columns={sortedColumns}
+          />
+        ))}
         <JobDetailDialog boardId={boardId} columnId={column._id} />
       </CardContent>
     </Card>
   );
 }
 
+function SortableJobCard({ job, columns }: { job: Jobs; columns: Column[] }) {
+  return (
+    <div>
+      <JobApplicationCard job={job} columns={columns} />
+    </div>
+  );
+}
+
 export default function Kanbanboard({ board, userId }: KanbanProps) {
   const columns = board.columns;
 
+  const columnsSorted = columns.sort((a, b) => a.order - b.order);
+
   return (
-    <div className="mt-8 flex">
+    <div className="mt-8">
       {columns.map((column, key) => {
         const config = COLUMN_CONFIG[key] || {
           color: "bg-cyan-500",
@@ -111,6 +133,7 @@ export default function Kanbanboard({ board, userId }: KanbanProps) {
             config={config}
             column={column}
             boardId={board._id}
+            sortedColumns={columnsSorted}
           />
         );
       })}

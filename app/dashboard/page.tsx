@@ -2,32 +2,32 @@ import Kanbanboard from "@/components/Kanbanboard";
 import { getSession } from "@/lib/auth/auth";
 import connectDB from "@/lib/db";
 import { Board } from "@/lib/models";
+import { IBoard } from "@/lib/models/board";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
-export default async function Dashboard() {
+async function getBoard(userId: string) {
+  "use cache";
+
+  await connectDB();
+
+  const boardDoc = await Board.findOne({
+    userId,
+    name: "Job Hunt",
+  }).populate({ path: "columns", populate: { path: "jobs" } });
+
+  if (!boardDoc) return null;
+
+  const board = JSON.parse(JSON.stringify(boardDoc));
+  return board;
+}
+
+async function DashboardPage() {
   const session = await getSession();
   if (!session?.user) {
     redirect("/signin");
   }
-
-  await connectDB();
-  const boardDoc = await Board.findOne({
-    userId: session.user.id,
-    name: "Job Hunt",
-  })
-    .populate("columns")
-    .select("name order jobs");
-
-  const board = JSON.parse(JSON.stringify(boardDoc));
-
-  console.log("board: ", board);
-
-  interface Columns {
-    name: string;
-    order: number;
-    jobs: string[];
-  }
-  [] = board.columns;
+  const board = await getBoard(session.user.id);
 
   return (
     <div className=" mx-auto overflow-auto ">
@@ -39,5 +39,13 @@ export default async function Dashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default async function Dashboard() {
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <DashboardPage />
+    </Suspense>
   );
 }

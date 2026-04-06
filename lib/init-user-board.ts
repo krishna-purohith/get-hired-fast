@@ -38,6 +38,6 @@ export async function initializeUserBoard(userId: string) {
 
     return board;
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 }
