@@ -20,10 +20,12 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { Board, Column, Jobs } from "@/lib/models/models.types";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "./ui/card";
-import JobDetailDialog from "./JobDetailDialog";
+import CreateJobDialog from "./CreateJobDialog";
 import JobApplicationCard from "./JobApplicationCard";
+import useBoard from "@/lib/hooks/useBoards";
+import { closestCorners, DndContext } from "@dnd-kit/core";
 
 interface KanbanProps {
   board: Board;
@@ -37,23 +39,23 @@ interface ColumnConfig {
 
 export const COLUMN_CONFIG: ColumnConfig[] = [
   {
-    color: "bg-cyan-500",
+    color: "bg-sky-500",
     icon: <Calendar className="h-3 w-3" />,
   },
   {
-    color: "bg-purple-500",
+    color: "bg-indigo-500",
     icon: <CheckCircle2 className="h-3 w-3" />,
   },
   {
-    color: "bg-green-500",
+    color: "bg-teal-500",
     icon: <Mic className="h-3 w-3" />,
   },
   {
-    color: "bg-yellow-500",
+    color: "bg-orange-500",
     icon: <Award className="h-3 w-3" />,
   },
   {
-    color: "bg-red-500",
+    color: "bg-pink-500",
     icon: <XCircle className="h-3 w-3" />,
   },
 ];
@@ -101,7 +103,7 @@ function DroppableColumn({
             columns={sortedColumns}
           />
         ))}
-        <JobDetailDialog boardId={boardId} columnId={column._id} />
+        <CreateJobDialog boardId={boardId} columnId={column._id} />
       </CardContent>
     </Card>
   );
@@ -116,27 +118,29 @@ function SortableJobCard({ job, columns }: { job: Jobs; columns: Column[] }) {
 }
 
 export default function Kanbanboard({ board, userId }: KanbanProps) {
-  const columns = board.columns;
+  const { columns } = useBoard(board);
 
   const columnsSorted = columns.sort((a, b) => a.order - b.order);
 
   return (
-    <div className="mt-8">
-      {columns.map((column, key) => {
-        const config = COLUMN_CONFIG[key] || {
-          color: "bg-cyan-500",
-          icon: <Calendar className="h-3 w-3" />,
-        };
-        return (
-          <DroppableColumn
-            key={key}
-            config={config}
-            column={column}
-            boardId={board._id}
-            sortedColumns={columnsSorted}
-          />
-        );
-      })}
+    <div className="space-y-4">
+      <div className="flex gap-4 overflow-x-auto pb-4">
+        {columns.map((column, key) => {
+          const config = COLUMN_CONFIG[key] || {
+            color: "bg-cyan-500",
+            icon: <Calendar className="h-3 w-3" />,
+          };
+          return (
+            <DroppableColumn
+              key={key}
+              config={config}
+              column={column}
+              boardId={board._id}
+              sortedColumns={columnsSorted}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

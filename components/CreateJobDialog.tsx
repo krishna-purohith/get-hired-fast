@@ -19,12 +19,12 @@ import { Jobs } from "@/lib/models";
 import { createJob } from "@/lib/serverActions/jobApplications";
 import board from "@/lib/models/board";
 
-interface JobDetailDialogProps {
+interface CreateJobDialogProps {
   columnId: string;
   boardId: string;
 }
 
-const JobDetailDialog = ({ columnId, boardId }: JobDetailDialogProps) => {
+const CreateJobDialog = ({ columnId, boardId }: CreateJobDialogProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const INITIAL_DATA = {
     company: "",
@@ -187,4 +187,4 @@ const JobDetailDialog = ({ columnId, boardId }: JobDetailDialogProps) => {
     </Dialog>
   );
 };
-export default JobDetailDialog;
+export default CreateJobDialog;

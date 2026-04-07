@@ -2,6 +2,10 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 
+import { useSession } from "@/lib/auth/auth-client";
+import { Briefcase } from "lucide-react";
+import SignOutButton from "./signOutButton";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,13 +15,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useSession } from "@/lib/auth/auth-client";
-import { Briefcase } from "lucide-react";
-import SignOutButton from "./signOutButton";
 
 export default function Navbar() {
-  const { data, refetch } = useSession();
+  const { data } = useSession();
+  console.log("navbar session: ", data);
   return (
     <nav className="border-b border-gray-200 bg-white">
       <div className="container mx-auto flex h-16 items-center px-4 justify-between">
@@ -26,7 +27,7 @@ export default function Navbar() {
           className="flex items-center gap-2 text-xl font-semibold text-primary"
         >
           <Briefcase />
-          Job Tracker
+          Job Hunt
         </Link>
         <div className="flex items-center gap-4">
           {data?.user ? (
@@ -44,12 +45,12 @@ export default function Navbar() {
                   <Button variant="ghost">
                     <Avatar>
                       <AvatarFallback className="bg-primary text-white text-lg">
-                        {data.user.name.charAt(0).toUpperCase()}
+                        {data.user.name.charAt(0).toUpperCase() ?? "U"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                
+
                 <DropdownMenuContent>
                   <DropdownMenuGroup>
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>

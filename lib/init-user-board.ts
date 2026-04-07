@@ -10,7 +10,7 @@ export async function initializeUserBoard(userId: string) {
       return existingBoard;
     }
     const board = await Board.create({
-      name: "Job Hunt",
+      name: "Job Search",
       userId: userId,
       columns: [],
     });

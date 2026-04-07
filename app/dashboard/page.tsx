@@ -2,7 +2,6 @@ import Kanbanboard from "@/components/Kanbanboard";
 import { getSession } from "@/lib/auth/auth";
 import connectDB from "@/lib/db";
 import { Board } from "@/lib/models";
-import { IBoard } from "@/lib/models/board";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -13,7 +12,7 @@ async function getBoard(userId: string) {
 
   const boardDoc = await Board.findOne({
     userId,
-    name: "Job Hunt",
+    name: "Job Search",
   }).populate({ path: "columns", populate: { path: "jobs" } });
 
   if (!boardDoc) return null;

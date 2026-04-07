@@ -39,6 +39,7 @@ export default function Signin() {
         setError(error.message ?? "Failed to sign in. Please try again");
       } else {
         router.push("/dashboard");
+        router.refresh();
       }
     } catch (error) {
       setError("An unexpected error occured");
@@ -113,6 +114,15 @@ export default function Signin() {
             </div>
           </CardFooter>
         </form>
+        <Button
+          className="bg-gray-400 w-fit mx-auto mt-15 hover:cursor-pointer"
+          onClick={() => {
+            setEmail("test1@gmail.com");
+            setPassword("test11111");
+          }}
+        >
+          Test Credentials
+        </Button>
       </Card>
     </div>
   );

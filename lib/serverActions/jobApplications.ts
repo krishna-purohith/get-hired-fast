@@ -121,7 +121,7 @@ export async function updateJob(
     return { error: "Unauthorized" };
   }
 
-  const { columnId, order, ...otherUpdates } = updates;
+  const { columnId, order, status, ...otherUpdates } = updates;
 
   const updatesToApply: Partial<{
     order: number;
@@ -147,6 +147,8 @@ export async function updateJob(
     await Column.findByIdAndUpdate(currentColumnId, {
       $pull: { jobs: id },
     });
+
+    const targetColumnStatus = status?.toLowerCase();
 
     const jobsInTargetColumn = await Jobs.find({
       columnId: newColumnId,
@@ -181,6 +183,7 @@ export async function updateJob(
 
     updatesToApply.order = newOrder;
     updatesToApply.columnId = newColumnId;
+    updatesToApply.status = targetColumnStatus;
 
     await Column.findByIdAndUpdate(newColumnId, {
       $push: { jobs: id },
@@ -243,4 +246,28 @@ export async function updateJob(
 
   revalidatePath("/dashboard");
   return { data: JSON.parse(JSON.stringify(updatedJobs)) };
+}
+
+export async function deleteJob(id: string) {
+  const session = await getSession();
+  if (!session?.user) {
+    return { error: "Unauthorized" };
+  }
+
+  const job = await Jobs.findById(id);
+  if (!job) {
+    return { error: "Job not found" };
+  }
+
+  if (job.userId !== session.user.id) {
+    return { error: "Unauthorized " };
+  }
+
+  await Column.findByIdAndUpdate(job.columnId, {
+    $pull: { jobs: id },
+  });
+  await Jobs.findByIdAndDelete(id);
+
+  revalidatePath("/dashboard");
+  return { success: true };
 }
