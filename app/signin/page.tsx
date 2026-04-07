@@ -30,7 +30,7 @@ export default function Signin() {
     setLoading(true);
 
     try {
-      const { data, error } = await authClient.signIn.email({
+      const { error } = await authClient.signIn.email({
         email,
         password,
       });
@@ -43,6 +43,7 @@ export default function Signin() {
       }
     } catch (error) {
       setError("An unexpected error occured");
+      console.log("Error while Login: ", error);
       return;
     } finally {
       setLoading(false);

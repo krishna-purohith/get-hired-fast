@@ -1,0 +1,7 @@
+-muted-foreground
+
+
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --primary: #00598a;
+  --destructive: oklch(0.577 0.245 27.325);

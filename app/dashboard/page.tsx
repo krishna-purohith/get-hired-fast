@@ -29,13 +29,13 @@ async function DashboardPage() {
   const board = await getBoard(session.user.id);
 
   return (
-    <div className=" mx-auto overflow-auto ">
-      <div className="w-full p-5">
-        <div className="text-black text-3xl font-semibold">{board.name}</div>
-        <p className="text-gray-700">Track your job applications</p>
-        <div>
-          <Kanbanboard board={board} userId={session.user.id} />
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-0.5 py-5">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-black">{board.name}</h1>
+          <p className="text-gray-600">Track your job applications</p>
         </div>
+        <Kanbanboard board={board} userId={session.user.id} />
       </div>
     </div>
   );

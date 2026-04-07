@@ -1,17 +1,11 @@
 "use client";
 
 import { Column, Jobs } from "@/lib/models/models.types";
-import { Card, CardContent } from "./ui/card";
-import { Edit2, ExternalLink, MoreVertical, Plus, Trash2 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
 import { deleteJob, updateJob } from "@/lib/serverActions/jobApplications";
+import { Edit2, ExternalLink, MoreVertical, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { Button } from "./ui/button";
+import { Card, CardContent } from "./ui/card";
 import {
   Dialog,
   DialogClose,
@@ -20,12 +14,17 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "./ui/dialog";
-import { Label } from "./ui/label";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
-import React, { useState } from "react";
 
 interface JobApplicationCardProps {
   job: Jobs;
@@ -88,26 +87,38 @@ const JobApplicationCard = ({ job, columns }: JobApplicationCardProps) => {
   return (
     <>
       <Card>
-        <CardContent>
-          <div className="flex justify-between">
-            <div>
-              <h3 className="font-semibold">{job.position}</h3>
-              <p>{job.company}</p>
-              {job.description && <p>{job.description}</p>}
+        <CardContent className="p-4">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-sm mb-1">{job.position}</h3>
+              <p className="text-xs text-muted-foreground mb-2">
+                {job.company}
+              </p>
+              {job.description && (
+                <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                  {job.description}
+                </p>
+              )}
               {job.tags && job.tags.length > 0 && (
-                <div>
+                <div className="flex flex-wrap gap-1 mb-2">
                   {job.tags.map((tag, key) => (
-                    <span key={key}>{tag}</span>
+                    <span
+                      className="text-pink-700 text-xs bg-pink-100 px-2 py-0.5 rounded-lg"
+                      key={key}
+                    >
+                      {tag}
+                    </span>
                   ))}
                 </div>
               )}
               {job.jobUrl && (
                 <a
+                  className="inline-flex items-center gap-1 text-xs text-primary cursor-pointer"
                   target="_blank"
                   href={job.jobUrl}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <ExternalLink />
+                  <ExternalLink className="h-4 w-4" />
                 </a>
               )}
             </div>
@@ -120,7 +131,7 @@ const JobApplicationCard = ({ job, columns }: JobApplicationCardProps) => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                    <Edit2 /> Edit
+                    <Edit2 className="mr-2 h-4 w-4" /> Edit
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
 
@@ -143,7 +154,7 @@ const JobApplicationCard = ({ job, columns }: JobApplicationCardProps) => {
                     className="text-destructive"
                     onClick={handleDelete}
                   >
-                    <Trash2 /> Delete
+                    <Trash2 className="mr-3" /> Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
