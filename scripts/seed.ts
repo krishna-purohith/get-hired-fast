@@ -1,7 +1,7 @@
 import connectDB from "@/lib/db";
 import { Board, Column, Jobs } from "@/lib/models";
 
-const USER_ID = "69d22035c153bc7a82755896";
+const USER_ID = "69d72c9e5ae38c2d6f394764";
 
 const SAMPLE_JOBS = [
   // Wish List
@@ -212,7 +212,7 @@ async function seed() {
           boardId: board._id,
           userId: USER_ID,
           status: columnName.toLowerCase().replace(" ", "-"),
-          order: key,
+          order: key * 100,
         });
 
         column.jobs.push(jobApplication._id);

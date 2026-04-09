@@ -1,4 +1,3 @@
-import { Jobs } from "@/lib/models";
 import { Column } from "@/lib/models/models.types";
 
 interface AddedJobsProps {

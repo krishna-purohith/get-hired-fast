@@ -35,6 +35,7 @@ const JobsSchema = new Schema<IJobs>(
     status: {
       type: String,
       required: true,
+      default: "applied",
     },
     salary: {
       type: String,
